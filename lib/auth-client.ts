@@ -1,6 +1,7 @@
 import { createAuthClient } from "better-auth/react";
 import { inferAdditionalFields } from "better-auth/client/plugins";
 import { auth } from "./auth";
+import { stripeClient } from "@better-auth/stripe/client";
 
 export const authClient = createAuthClient({
   plugins: [
@@ -15,6 +16,9 @@ export const authClient = createAuthClient({
           required: false,
         },
       },
+    }),
+    stripeClient({
+      subscription: true,
     }),
   ],
 });

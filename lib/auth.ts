@@ -6,6 +6,10 @@ import { render } from "@react-email/components";
 import EmailVerificationTemplate from "@/app/(auth)/templates/email-verification";
 import { sendEmail } from "./email";
 import ResetPasswordTemplate from "@/app/(auth)/templates/reset-password";
+import { stripe as betterAuthStripe } from "@better-auth/stripe";
+import { stripe } from "./stripe";
+
+const stripeClient = stripe;
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -75,7 +79,23 @@ export const auth = betterAuth({
     },
   },
   trustedOrigins: ["http://localhost:3001", "192.168.11.8"],
-  plugins: [nextCookies()],
+  plugins: [
+    nextCookies(),
+    betterAuthStripe({
+      stripeClient,
+      stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET!,
+      createCustomerOnSignUp: true,
+      subscription: {
+        enabled: true,
+        plans: [
+          {
+            name: "pro",
+            priceId: "price_1T2XQvCpJphJ9HL3bbRAAvPr",
+          },
+        ],
+      },
+    }),
+  ],
   account: {
     accountLinking: {
       enabled: false,
