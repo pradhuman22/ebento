@@ -33,3 +33,19 @@ export const forgotPasswordSchema = z.object({
       issue.input == "" ? "Email is required." : "Invalid email.",
   }),
 });
+
+export const resetPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .nonempty({ message: "password is required" })
+      .min(6, { message: "password must be atleast 6 characters or more" }),
+    confirmPassword: z
+      .string()
+      .nonempty({ message: "password is required" })
+      .min(6, { message: "password must be atleast 6 characters or more" }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: " Password and confirm password doesn't match.",
+    path: ["confirmPassword"],
+  });
