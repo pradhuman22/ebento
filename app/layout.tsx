@@ -38,7 +38,7 @@ export default function RootLayout({
         </div>
 
         <Toaster
-          position="top-left"
+          position="top-right"
           toastOptions={{
             classNames: {
               error: "!bg-red-100 !text-red-600 !border-red-200",
