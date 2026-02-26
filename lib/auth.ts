@@ -5,6 +5,7 @@ import { nextCookies } from "better-auth/next-js";
 import { render } from "@react-email/components";
 import EmailVerificationTemplate from "@/app/(auth)/templates/email-verification";
 import { sendEmail } from "./email";
+import ResetPasswordTemplate from "@/app/(auth)/templates/reset-password";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -36,7 +37,19 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
-    sendResetPassword: async () => {},
+    sendResetPassword: async ({ user, url }) => {
+      const emailHtml = await render(
+        ResetPasswordTemplate({
+          username: user.name,
+          resetPasswordUrl: url,
+        })
+      );
+      await sendEmail({
+        to: user.email,
+        subject: "Reset your ebento password",
+        html: emailHtml,
+      });
+    },
   },
   emailVerification: {
     autoSignInAfterVerification: true,
